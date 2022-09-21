@@ -99,15 +99,44 @@ namespace CaloricIntakeConsole
 
                 if (userSelection == 1)
                 {
-                    Console.WriteLine("Enter Meal Date [YYYY/MM/DD]: ");
+                    Console.WriteLine("Enter Meal Date [YYYY/MM/DD]:");
                     string meal_date = Console.ReadLine();
-                    temp_meal.Date = meal_date;
-                }
+                    char[] meal_date_char_codes = meal_date.ToCharArray();
+                                         
+                    if (meal_date_char_codes.Length != 10) { error_code = 2; }
+                    else if (meal_date_char_codes[0] < 48 || meal_date_char_codes[0] > 57) { error_code = 2; }
+                    else if (meal_date_char_codes[1] < 48 || meal_date_char_codes[1] > 57) { error_code = 2; }
+                    else if (meal_date_char_codes[2] < 48 || meal_date_char_codes[2] > 57) { error_code = 2; }
+                    else if (meal_date_char_codes[3] < 48 || meal_date_char_codes[3] > 57) { error_code = 2; }
+                    else if (meal_date_char_codes[4] != 47) { error_code = 2; }
+                    else if (meal_date_char_codes[5] < 48 || meal_date_char_codes[5] > 57) { error_code = 2; }
+                    else if (meal_date_char_codes[6] < 48 || meal_date_char_codes[6] > 57) { error_code = 2; }
+                    else if (meal_date_char_codes[7] != 47) { error_code = 2; }
+                    else if (meal_date_char_codes[8] < 48 || meal_date_char_codes[8] > 57) { error_code = 2; }
+                    else if (meal_date_char_codes[9] < 48 || meal_date_char_codes[9] > 57) { error_code = 2; }
+                    else
+                    {
+                        error_code = 0;
+                        temp_meal.Date = meal_date;
+                    }
+                }                                    
                 else if (userSelection == 2)
                 {
                     Console.WriteLine("Enter Meal Time [HH:MM]: ");
                     string meal_time = Console.ReadLine();
-                    temp_meal.Time = meal_time;
+                    char[] meal_time_char_codes = meal_time.ToCharArray();
+
+                    if (meal_time_char_codes.Length != 5) { error_code = 2; }
+                    else if (meal_time_char_codes[0] < 48 || meal_time_char_codes[0] > 50) { error_code = 2; }
+                    else if (meal_time_char_codes[1] < 48 || meal_time_char_codes[1] > 57) { error_code = 2; }
+                    else if (meal_time_char_codes[2] != 58) { error_code = 2; }
+                    else if (meal_time_char_codes[3] < 48 || meal_time_char_codes[3] > 53) { error_code = 2; }
+                    else if (meal_time_char_codes[4] < 48 || meal_time_char_codes[4] > 57) { error_code = 2; }
+                    else
+                    {
+                        error_code = 0;
+                        temp_meal.Time = meal_time;
+                    }                    
                 }
                 else if (userSelection == 3)
                 {                    
@@ -127,6 +156,30 @@ namespace CaloricIntakeConsole
                     
                     temp_items.Add(new MealItems { Quantity = item_qty, UnitMeasurement = item_unit, Description = item_desc, Calories = int_item_cals });
                     temp_meal.mealitems = temp_items;
+                }
+                else if (userSelection == 0)
+                {
+                    if (temp_meal.Date == null)
+                    {
+                        error_code = 3;
+                        userSelection = -1;
+                    }
+                    else if (temp_meal.Time == null)
+                    {
+                        error_code = 3;
+                        userSelection = -1;
+                    }
+                    else if (temp_meal.mealitems == null)
+                    {
+                        error_code = 3;
+                        userSelection = -1;
+                    }
+                    else
+                    {
+                        error_code = 0;
+                        userSelection = 0;
+                    }
+                    
                 }
             }
             mealHistory.meals = new List<Meal> { temp_meal };
@@ -163,24 +216,34 @@ namespace CaloricIntakeConsole
 
         static void errorOutput(int error_code)
         {
-            if(error_code == 0)
+            if (error_code == 0)
             {
                 // No Error
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("[Status: No Errors]\n");
             }
-            if(error_code == 1)
+            if (error_code == 1)
             {
                 // Error
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("[Status: Invalid Input]\n");
+            }
+            if (error_code == 2)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("[Status: Invalid Input - Did not follow correct format]\n");
+            }
+            if (error_code == 3)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("[Status: Invalid Input - Missing Meal Entry Data]\n");
             }
         }
 
         static void appTitle()
         {
             Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine("Caloric Intake v0.2");
+            Console.WriteLine("Caloric Intake v0.3");
             Console.ForegroundColor = ConsoleColor.DarkBlue;
             Console.WriteLine("+-----------------+");
         }
