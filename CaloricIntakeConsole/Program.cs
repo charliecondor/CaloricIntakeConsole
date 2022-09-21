@@ -59,9 +59,7 @@ namespace CaloricIntakeConsole
                 else if(userSelection == 3)
                 {
                     errorCode = 0;
-                    Console.Clear();
-                    Console.WriteLine("View History Menu");
-                    Console.ReadKey();
+                    viewHistory(errorCode, mealHistory);                    
                 }
                 else
                 {                    
@@ -81,6 +79,31 @@ namespace CaloricIntakeConsole
             Console.WriteLine("\n   Main Menu\n\n1. Add Meal\n2. Edit Meal\n3. View History\n0. Exit\n");
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("#> ");            
+        }
+        static void viewHistory(int error_code, MealHistory mealHistory)
+        {
+            List<string> dateList = new List<string>();
+
+            Console.Clear();
+            Console.WriteLine("| Date  | Total Calories");
+            Console.WriteLine("+-------+--------------+");            
+
+            foreach (Meal meal in mealHistory.meals)
+            {
+                if (!dateList.Contains(meal.Date))
+                {
+                    dateList.Add(meal.Date);
+                }
+            }
+
+            dateList.Sort();
+
+            foreach (string item in dateList)
+            {
+                Console.WriteLine(item);
+            }
+            
+            Console.ReadKey();
         }
 
         static void addMenu(int error_code, MealHistory mealHistory)
