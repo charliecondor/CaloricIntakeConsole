@@ -1,8 +1,6 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Text.Json;
 
 namespace CaloricIntakeConsole
@@ -11,7 +9,20 @@ namespace CaloricIntakeConsole
     {
         static void Main(string[] args)
         {
-            MealHistory mealHistory = new MealHistory();            
+            string fileJSON = "mealHistoryJSON.json";
+            MealHistory mealHistory = new MealHistory();
+            string mealJSON = "";
+
+            if (File.Exists(fileJSON))
+            {
+                mealJSON = File.ReadAllText(fileJSON);
+                mealHistory = JsonSerializer.Deserialize<MealHistory>(mealJSON);
+            }
+            else
+            {
+                mealJSON = JsonSerializer.Serialize(mealHistory);
+                File.WriteAllText(fileJSON, mealJSON);
+            }            
 
             Console.Title = "Caloric Intake Console App";
             Console.Clear();
@@ -53,10 +64,12 @@ namespace CaloricIntakeConsole
                     Console.ReadKey();
                 }
                 else
-                {
+                {                    
                     errorCode = 1;
                 }
             }
+            mealJSON = JsonSerializer.Serialize(mealHistory);
+            File.WriteAllText(fileJSON, mealJSON);
         }
 
         static void mainMenu(int error_code)
@@ -224,8 +237,8 @@ namespace CaloricIntakeConsole
                         userSelection = 0;
                     }                    
                 }
-            }
-            mealHistory.meals = new List<Meal> { temp_meal };
+            }            
+            mealHistory.meals.Add(temp_meal);
         }
 
         static void displayMeal(Meal temp_meal)
