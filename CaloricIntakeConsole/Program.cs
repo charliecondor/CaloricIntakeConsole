@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json;
 
 namespace CaloricIntakeConsole
 {
@@ -71,7 +72,6 @@ namespace CaloricIntakeConsole
 
         static void addMenu(int error_code, MealHistory mealHistory)
         {
-            string userInput = null;
             int userSelection = -1;
             Meal temp_meal = new Meal();
             List<MealItems> temp_items = new List<MealItems>();
@@ -99,7 +99,7 @@ namespace CaloricIntakeConsole
 
                 if (userSelection == 1)
                 {
-                    Console.WriteLine("Enter Meal Date [YYYY/MM/DD]:");
+                    Console.Write("Enter Meal Date [YYYY/MM/DD]: ");
                     string meal_date = Console.ReadLine();
                     char[] meal_date_char_codes = meal_date.ToCharArray();
                                          
@@ -122,7 +122,7 @@ namespace CaloricIntakeConsole
                 }                                    
                 else if (userSelection == 2)
                 {
-                    Console.WriteLine("Enter Meal Time [HH:MM]: ");
+                    Console.Write("Enter Meal Time [HH:MM]: ");
                     string meal_time = Console.ReadLine();
                     char[] meal_time_char_codes = meal_time.ToCharArray();
 
@@ -152,10 +152,54 @@ namespace CaloricIntakeConsole
 
                     Console.Write("Enter Calories: ");
                     string str_item_cals = Console.ReadLine();
-                    int int_item_cals = Convert.ToInt32(str_item_cals);
-                    
-                    temp_items.Add(new MealItems { Quantity = item_qty, UnitMeasurement = item_unit, Description = item_desc, Calories = int_item_cals });
-                    temp_meal.mealitems = temp_items;
+                    int int_item_cals = new int();
+
+                    try
+                    {
+                        int_item_cals = Convert.ToInt32(str_item_cals);
+                        error_code = 0;
+                        temp_items.Add(new MealItems { Quantity = item_qty, UnitMeasurement = item_unit, Description = item_desc, Calories = int_item_cals });
+                        temp_meal.mealitems = temp_items;
+                    }
+                    catch
+                    {
+                        error_code = 1;
+                        userSelection = -1;
+                    }                    
+                }
+                else if (userSelection == 4)
+                {
+                    if (temp_meal.mealitems == null || temp_meal.mealitems.Count == 0)
+                    {
+                        error_code = 4;
+                    }
+                    else
+                    {
+                        Console.Write("Select Meal Item to Remove [Entry #]: ");
+                        string str_entry_to_remove = Console.ReadLine();
+                        int int_entry_to_remove = new int();
+
+                        try
+                        {
+                            int_entry_to_remove = Convert.ToInt32(str_entry_to_remove);
+                            
+                            if (int_entry_to_remove < 0 || int_entry_to_remove > temp_meal.mealitems.Count)
+                            {
+                                error_code = 1;
+                                userSelection = -1;
+                            }
+                            else
+                            {
+                                temp_meal.mealitems.RemoveAt(int_entry_to_remove);
+                                error_code = 0;
+                            }                            
+                        }
+                        catch
+                        {
+                            error_code = 1;
+                            userSelection = -1;
+                        }
+                    }                    
                 }
                 else if (userSelection == 0)
                 {
@@ -178,8 +222,7 @@ namespace CaloricIntakeConsole
                     {
                         error_code = 0;
                         userSelection = 0;
-                    }
-                    
+                    }                    
                 }
             }
             mealHistory.meals = new List<Meal> { temp_meal };
@@ -236,14 +279,19 @@ namespace CaloricIntakeConsole
             if (error_code == 3)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("[Status: Invalid Input - Missing Meal Entry Data]\n");
+                Console.WriteLine("[Status: Invalid Input - Missing meal entry data]\n");
+            }
+            if (error_code == 4)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("[Status: No meal items, add one first]\n");
             }
         }
 
         static void appTitle()
         {
             Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine("Caloric Intake v0.3");
+            Console.WriteLine("Caloric Intake v0.4");
             Console.ForegroundColor = ConsoleColor.DarkBlue;
             Console.WriteLine("+-----------------+");
         }
