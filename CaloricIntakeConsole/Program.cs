@@ -125,10 +125,9 @@ namespace CaloricIntakeConsole
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.Write(item.TotalCalories);
                 Console.ForegroundColor = ConsoleColor.Blue;
-                Console.WriteLine("\t\t\t|");
-                Console.WriteLine("+---------------+-----------------------+");
+                Console.WriteLine("\t\t\t|");                
             }
-
+            Console.WriteLine("+---------------+-----------------------+");
             Console.ReadKey();
         }
 
