@@ -105,8 +105,11 @@ namespace CaloricIntakeConsole
                 foreach (Meal meal in mealHistory.meals)
                 {
                     if (day.Date == meal.Date)
-                    {
-                        day.TotalCalories += meal.mealitems[0].Calories;
+                    {                        
+                        foreach (MealItems mealitem in meal.mealitems)
+                        {
+                            day.TotalCalories += mealitem.Calories;
+                        }
                     }
                 }
             }
