@@ -10,27 +10,28 @@ namespace CaloricIntakeConsole
         static void Main(string[] args)
         {
             string fileJSON = "mealHistoryJSON.json";
+            var options = new JsonSerializerOptions { IncludeFields = true };
             MealHistory mealHistory = new MealHistory();
             string mealJSON = "";
 
             if (File.Exists(fileJSON))
             {
                 mealJSON = File.ReadAllText(fileJSON);
-                mealHistory = JsonSerializer.Deserialize<MealHistory>(mealJSON);
+                mealHistory = JsonSerializer.Deserialize<MealHistory>(mealJSON, options);
             }
             else
             {
-                mealJSON = JsonSerializer.Serialize(mealHistory);
+                mealJSON = JsonSerializer.Serialize(mealHistory, options);
                 File.WriteAllText(fileJSON, mealJSON);
-            }            
+            }
 
             Console.Title = "Caloric Intake Console App";
             Console.Clear();
 
             int userSelection = -1;
             int errorCode = 0;
-                      
-            while(userSelection != 0)
+
+            while (userSelection != 0)
             {
                 mainMenu(errorCode);
 
@@ -43,30 +44,30 @@ namespace CaloricIntakeConsole
                     errorCode = 1;
                     userSelection = -1;
                 }
-                
+
                 if (userSelection == 1)
                 {
                     errorCode = 0;
-                    addMenu(errorCode, mealHistory);                  
+                    addMenu(errorCode, mealHistory);
                 }
-                else if(userSelection == 2)
+                else if (userSelection == 2)
                 {
                     errorCode = 0;
                     Console.Clear();
                     Console.WriteLine("Edit Meal Menu");
                     Console.ReadKey();
                 }
-                else if(userSelection == 3)
+                else if (userSelection == 3)
                 {
                     errorCode = 0;
-                    viewHistory(errorCode, mealHistory);                    
+                    viewHistory(errorCode, mealHistory);
                 }
                 else
-                {                    
+                {
                     errorCode = 1;
                 }
-            }
-            mealJSON = JsonSerializer.Serialize(mealHistory);
+            }            
+            mealJSON = JsonSerializer.Serialize(mealHistory, options);
             File.WriteAllText(fileJSON, mealJSON);
         }
 
@@ -78,31 +79,53 @@ namespace CaloricIntakeConsole
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("\n   Main Menu\n\n1. Add Meal\n2. Edit Meal\n3. View History\n0. Exit\n");
             Console.ForegroundColor = ConsoleColor.White;
-            Console.Write("#> ");            
+            Console.Write("#> ");
         }
         static void viewHistory(int error_code, MealHistory mealHistory)
         {
-            List<string> dateList = new List<string>();
+            List<DailySummary> dailySummary = new List<DailySummary>();
 
             Console.Clear();
-            Console.WriteLine("| Date  | Total Calories");
-            Console.WriteLine("+-------+--------------+");            
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine("| Date          | Total Calories        |");
+            Console.WriteLine("+---------------+-----------------------+");
 
             foreach (Meal meal in mealHistory.meals)
             {
-                if (!dateList.Contains(meal.Date))
-                {
-                    dateList.Add(meal.Date);
+                if (!dailySummary.Exists(x => x.Date == meal.Date))
+                {                    
+                    dailySummary.Add(new DailySummary { Date = meal.Date, TotalCalories = 0 });
                 }
             }
 
-            dateList.Sort();
+            dailySummary.Sort((x, y) => x.Date.CompareTo(y.Date));
 
-            foreach (string item in dateList)
+            foreach (DailySummary day in dailySummary)
             {
-                Console.WriteLine(item);
+                foreach (Meal meal in mealHistory.meals)
+                {
+                    if (day.Date == meal.Date)
+                    {
+                        day.TotalCalories += meal.mealitems[0].Calories;
+                    }
+                }
             }
-            
+
+            foreach (DailySummary item in dailySummary)
+            {
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.Write("| ");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write(item.Date);
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.Write("\t| ");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write(item.TotalCalories);
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.WriteLine("\t\t\t|");
+                Console.WriteLine("+---------------+-----------------------+");
+            }
+
             Console.ReadKey();
         }
 
@@ -118,7 +141,7 @@ namespace CaloricIntakeConsole
                 errorOutput(error_code);
                 appTitle();
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("\n   Add Meal\n\n1. Set Date\n2. Set Time\n3. Add Item\n4. Remove Item\n0. Save & Exit\n");                
+                Console.WriteLine("\n   Add Meal\n\n1. Set Date\n2. Set Time\n3. Add Item\n4. Remove Item\n0. Save & Exit\n");
                 displayMeal(temp_meal);
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.Write("#> ");
@@ -138,7 +161,7 @@ namespace CaloricIntakeConsole
                     Console.Write("Enter Meal Date [YYYY/MM/DD]: ");
                     string meal_date = Console.ReadLine();
                     char[] meal_date_char_codes = meal_date.ToCharArray();
-                                         
+
                     if (meal_date_char_codes.Length != 10) { error_code = 2; }
                     else if (meal_date_char_codes[0] < 48 || meal_date_char_codes[0] > 57) { error_code = 2; }
                     else if (meal_date_char_codes[1] < 48 || meal_date_char_codes[1] > 57) { error_code = 2; }
@@ -155,7 +178,7 @@ namespace CaloricIntakeConsole
                         error_code = 0;
                         temp_meal.Date = meal_date;
                     }
-                }                                    
+                }
                 else if (userSelection == 2)
                 {
                     Console.Write("Enter Meal Time [HH:MM]: ");
@@ -172,10 +195,10 @@ namespace CaloricIntakeConsole
                     {
                         error_code = 0;
                         temp_meal.Time = meal_time;
-                    }                    
+                    }
                 }
                 else if (userSelection == 3)
-                {                    
+                {
                     Console.WriteLine("Entering Meal Item (QTY/UNIT/DESC/CAL)...");
                     Console.Write("Enter Quantity: ");
                     string item_qty = Console.ReadLine();
@@ -201,7 +224,7 @@ namespace CaloricIntakeConsole
                     {
                         error_code = 1;
                         userSelection = -1;
-                    }                    
+                    }
                 }
                 else if (userSelection == 4)
                 {
@@ -218,7 +241,7 @@ namespace CaloricIntakeConsole
                         try
                         {
                             int_entry_to_remove = Convert.ToInt32(str_entry_to_remove);
-                            
+
                             if (int_entry_to_remove < 0 || int_entry_to_remove > temp_meal.mealitems.Count)
                             {
                                 error_code = 1;
@@ -228,14 +251,14 @@ namespace CaloricIntakeConsole
                             {
                                 temp_meal.mealitems.RemoveAt(int_entry_to_remove);
                                 error_code = 0;
-                            }                            
+                            }
                         }
                         catch
                         {
                             error_code = 1;
                             userSelection = -1;
                         }
-                    }                    
+                    }
                 }
                 else if (userSelection == 0)
                 {
@@ -258,10 +281,10 @@ namespace CaloricIntakeConsole
                     {
                         error_code = 0;
                         userSelection = 0;
-                    }                    
+                    }
                 }
-            }            
-            mealHistory.meals.Add(temp_meal);
+            }
+            mealHistory.AddMeal(temp_meal);
         }
 
         static void displayMeal(Meal temp_meal)
@@ -270,7 +293,7 @@ namespace CaloricIntakeConsole
             Console.Write("[Meal Date]: ");
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine(temp_meal.Date);
-            
+
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.Write("[Meal Time]: ");
             Console.ForegroundColor = ConsoleColor.White;
@@ -285,11 +308,11 @@ namespace CaloricIntakeConsole
                 int entry_number = 0;
                 foreach (MealItems item in temp_meal.mealitems)
                 {
-                    Console.WriteLine(formatOutput(8, "[" + entry_number + "]") + formatOutput(8, item.Quantity) + formatOutput(8, item.UnitMeasurement) 
+                    Console.WriteLine(formatOutput(8, "[" + entry_number + "]") + formatOutput(8, item.Quantity) + formatOutput(8, item.UnitMeasurement)
                         + formatOutput(24, item.Description) + formatOutput(16, Convert.ToString(item.Calories)) + formatOutput(8, ""));
                     entry_number++;
                 }
-            }            
+            }
             Console.WriteLine("\n");
         }
 
@@ -328,7 +351,7 @@ namespace CaloricIntakeConsole
         {
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine("Caloric Intake v0.4");
-            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine("+-----------------+");
         }
 
@@ -342,7 +365,7 @@ namespace CaloricIntakeConsole
             if (column_text.Length < padded_format)
             {
                 padded_text = formatted_text + column_text;
-                
+
                 int empty_space = 2 + column_text.Length;
                 while (empty_space < column_width)
                 {
@@ -353,18 +376,25 @@ namespace CaloricIntakeConsole
 
             return padded_text;
         }
-    }    
+    }
 
     public class MealHistory
     {
-        public List<Meal> meals { get; set; }
+        public List<Meal> meals = new List<Meal>();
+
+        public bool AddMeal(Meal meal)
+        {
+            meals.Add(new Meal { Date = meal.Date, Time = meal.Time, mealitems = meal.mealitems });
+            return true;
+        }
     }
 
     public class Meal
     {
         public string Date { get; set; }
         public string Time { get; set; }
-        public List<MealItems> mealitems { get; set; }
+
+        public List<MealItems> mealitems = new List<MealItems>();
     }
 
     public class MealItems
@@ -373,5 +403,11 @@ namespace CaloricIntakeConsole
         public string UnitMeasurement { get; set; }
         public string Description { get; set; }
         public int Calories { get; set; }
+    }
+
+    public class DailySummary
+    {
+        public string Date { get; set; }
+        public int TotalCalories { get; set; }
     }
 }
