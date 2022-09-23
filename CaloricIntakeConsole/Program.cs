@@ -2,6 +2,7 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Text.Json;
+using System.Linq;
 
 namespace CaloricIntakeConsole
 {
@@ -86,7 +87,9 @@ namespace CaloricIntakeConsole
             List<DailySummary> dailySummary = new List<DailySummary>();
 
             Console.Clear();
+            appTitle();
             Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine("+---------------+-----------------------+");
             Console.WriteLine("| Date          | Total Calories        |");
             Console.WriteLine("+---------------+-----------------------+");
 
@@ -99,7 +102,6 @@ namespace CaloricIntakeConsole
             }
 
             dailySummary.Sort((x, y) => x.Date.CompareTo(y.Date));
-
             foreach (DailySummary day in dailySummary)
             {
                 foreach (Meal meal in mealHistory.meals)
@@ -128,6 +130,94 @@ namespace CaloricIntakeConsole
                 Console.WriteLine("\t\t\t|");                
             }
             Console.WriteLine("+---------------+-----------------------+");
+            Console.WriteLine("| Summary                               |");
+            Console.WriteLine("+---------------------------------------+");
+
+            int lifetime_total_calories = new int();
+            int lifetime_high_calories = new int();
+            int lifetime_low_calories = 100000;
+            string lifetime_high_date = "";
+            string lifetime_low_date = "";
+            foreach (DailySummary day in dailySummary) 
+            { 
+                lifetime_total_calories += day.TotalCalories;
+                if (lifetime_high_calories < day.TotalCalories) 
+                { 
+                    lifetime_high_calories = day.TotalCalories;
+                    lifetime_high_date = day.Date;
+                }
+                if (lifetime_low_calories > day.TotalCalories && day.Date != dailySummary.Last().Date) 
+                { 
+                    lifetime_low_calories = day.TotalCalories;
+                    lifetime_low_date = day.Date;
+                }
+            }
+            int lifetime_average_calories = lifetime_total_calories / dailySummary.Count;            
+            Console.Write("| Lifetime total: ");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write(lifetime_total_calories);
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("\t\t\t|\n");
+            Console.Write("| Lifetime average: ");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write(lifetime_average_calories);
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("\t\t|\n");
+            Console.Write("| Lifetime highest: ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write(lifetime_high_calories + " " + lifetime_high_date);
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("\t|\n");
+            Console.Write("| Lifetime lowest: ");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write(lifetime_low_calories + " " + lifetime_low_date);
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("\t|\n");
+
+            int tenday_total_calories = new int();
+            int tenday_high_calories = new int();
+            int tenday_low_calories = 100000;
+            string tenday_high_date = "";
+            string tenday_low_date = "";
+            int last_ten = dailySummary.Count - 11;
+            while (last_ten < dailySummary.Count - 1)
+            {
+                tenday_total_calories += dailySummary[last_ten].TotalCalories;
+                if (tenday_high_calories < dailySummary[last_ten].TotalCalories) 
+                {
+                    tenday_high_calories = dailySummary[last_ten].TotalCalories;
+                    tenday_high_date = dailySummary[last_ten].Date;
+                }
+                else if (tenday_low_calories > dailySummary[last_ten].TotalCalories)
+                {                    
+                    tenday_low_calories = dailySummary[last_ten].TotalCalories;
+                    tenday_low_date = dailySummary[last_ten].Date;
+                }
+                last_ten++;
+            }
+            int tenday_average_calories = tenday_total_calories / 10;
+            Console.Write("| Last 10-day total: ");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write(tenday_total_calories);
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("\t\t|\n");
+            Console.Write("| Last 10-day average: ");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write(tenday_average_calories);
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("\t\t|\n");
+            Console.Write("| Last 10-day highest: ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write(tenday_high_calories + " " + tenday_high_date);
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("\t|\n");
+            Console.Write("| Last 10-day lowest: ");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write(tenday_low_calories + " " + tenday_low_date);
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("\t|\n");
+            Console.WriteLine("+---------------------------------------+");
+
             Console.ReadKey();
         }
 
@@ -305,6 +395,7 @@ namespace CaloricIntakeConsole
             Console.WriteLine("[Meal Item(s)]");
             Console.WriteLine("|Entry#\t| Qty\t| Unit\t| Description\t\t| Calories\t|:");
             Console.ForegroundColor = ConsoleColor.White;
+
             if (temp_meal.mealitems != null)
             {
                 int entry_number = 0;
@@ -357,7 +448,7 @@ namespace CaloricIntakeConsole
         static void appTitle()
         {
             Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine("Caloric Intake v0.4");
+            Console.WriteLine("Caloric Intake v0.5");
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine("+-----------------+");
         }
@@ -385,7 +476,6 @@ namespace CaloricIntakeConsole
                     empty_spaces--;
                 }
             }
-
             return formatted_text;
         }
     }
