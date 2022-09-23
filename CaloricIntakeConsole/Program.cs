@@ -310,8 +310,13 @@ namespace CaloricIntakeConsole
                 int entry_number = 0;
                 foreach (MealItems item in temp_meal.mealitems)
                 {
-                    Console.WriteLine(formatOutput(8, "[" + entry_number + "]") + formatOutput(8, item.Quantity) + formatOutput(8, item.UnitMeasurement)
-                        + formatOutput(24, item.Description) + formatOutput(16, Convert.ToString(item.Calories)) + formatOutput(8, ""));
+                    string format_qty = item.Quantity;
+                    string format_unit = item.UnitMeasurement;
+                    string format_desc = item.Description;
+                    string format_cal = Convert.ToString(item.Calories);
+
+                    Console.WriteLine(formatOutput(8, "[" + entry_number + "]") + formatOutput(8, format_qty) + formatOutput(8, format_unit)
+                        + formatOutput(24, format_desc) + formatOutput(16, format_cal) + formatOutput(8, ""));
                     entry_number++;
                 }
             }
@@ -359,24 +364,29 @@ namespace CaloricIntakeConsole
 
         static string formatOutput(int column_width, string column_text)
         {
-            string formatted_text = "| ";
-            string padded_text = "";
-            int formatted_padding = 2;
-            int padded_format = column_width - formatted_padding;
+            string header_text = "| ";
+            string padding = "";
+            int header_length = header_text.Length;
+            int body_length = column_width - header_length;
+            int text_length = column_text.Length;
+            string formatted_text = "";
 
-            if (column_text.Length < padded_format)
+            if (text_length >= body_length)
             {
-                padded_text = formatted_text + column_text;
-
-                int empty_space = 2 + column_text.Length;
-                while (empty_space < column_width)
+                formatted_text = header_text + column_text.Substring(0, body_length);
+            }
+            else
+            {
+                formatted_text = header_text + column_text;
+                int empty_spaces = column_width - header_length - text_length;
+                while (empty_spaces > 0)
                 {
-                    padded_text += " ";
-                    empty_space++;
+                    formatted_text += " ";
+                    empty_spaces--;
                 }
             }
 
-            return padded_text;
+            return formatted_text;
         }
     }
 
