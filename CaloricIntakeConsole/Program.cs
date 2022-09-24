@@ -42,7 +42,6 @@ namespace CaloricIntakeConsole
 
         static void displayMainmenu(int error_code)
         {
-            Console.Clear();
             errorOutput(error_code);
             appTitle();
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -53,10 +52,8 @@ namespace CaloricIntakeConsole
         static void editMenu(int error_code, MealHistory mealHistory)
         {
             int userSelection = -1;
-
             while (userSelection != 0)
             {
-                Console.Clear();
                 errorOutput(error_code);
                 appTitle();
                 Console.ForegroundColor = ConsoleColor.Yellow;
@@ -67,31 +64,31 @@ namespace CaloricIntakeConsole
                 try
                 {
                     userSelection = Convert.ToInt32(Console.ReadLine());
+
+                    if (userSelection == 1)
+                    {
+                        displayMeals(mealHistory);
+                        error_code = 0;
+                    }
+                    else if (userSelection == 0)
+                    {
+                        error_code = 0;
+                        userSelection = 0;
+                    }
                 }
                 catch
                 {
                     error_code = 1;
                     userSelection = -1;
                 }
-
-                if (userSelection == 1)
-                {
-                    displayMeals(mealHistory);
-                    error_code = 0;
-                }                
-                else if (userSelection == 0)
-                {
-                    error_code = 0;
-                    userSelection = 0;
-                }    
             }
         }
         static void viewHistory(int error_code, MealHistory mealHistory)
         {
             List<DailySummary> dailySummary = new List<DailySummary>();
-
-            Console.Clear();
+            errorOutput(error_code);
             appTitle();
+
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine("+---------------+-----------------------+");
             Console.WriteLine("| Date          | Total Calories        |");
@@ -232,7 +229,6 @@ namespace CaloricIntakeConsole
 
             while (userSelection != 0)
             {
-                Console.Clear();
                 errorOutput(error_code);
                 appTitle();
                 Console.ForegroundColor = ConsoleColor.Yellow;
@@ -430,6 +426,7 @@ namespace CaloricIntakeConsole
         }
         static void errorOutput(int error_code)
         {
+            Console.Clear();
             if (error_code == 0)
             {
                 // No Error
