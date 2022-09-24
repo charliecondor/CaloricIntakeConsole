@@ -3,7 +3,6 @@ using System.IO;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Linq;
-using System.Security.Policy;
 
 namespace CaloricIntakeConsole
 {
@@ -11,34 +10,19 @@ namespace CaloricIntakeConsole
     {
         static void Main(string[] args)
         {
-            string fileJSON = "mealHistoryJSON.json";
-            var options = new JsonSerializerOptions { IncludeFields = true };
-            MealHistory mealHistory = new MealHistory();
-            string mealJSON = "";
-
-            if (File.Exists(fileJSON))
-            {
-                mealJSON = File.ReadAllText(fileJSON);
-                mealHistory = JsonSerializer.Deserialize<MealHistory>(mealJSON, options);
-            }
-            else
-            {
-                mealJSON = JsonSerializer.Serialize(mealHistory, options);
-                File.WriteAllText(fileJSON, mealJSON);
-            }            
+            MealHistory mealHistory = new MealHistory();  // Instantiating a MealHistory object for storing the JSON meal data
+            string fileJSON = "mealHistoryJSON.json";  // Filename for JSON meal data
+            mealHistory = readJSON(fileJSON);  // Checks if JSON meal data exists, then deserializes it into MealHistory object
 
             int userSelection = -1;
             int errorCode = 0;
-
             while (userSelection != 0)
             {
                 Console.Title = "Caloric Intake Console App";
                 displayMainmenu(errorCode);
-
                 try
                 {
                     userSelection = Convert.ToInt32(Console.ReadLine());
-
                     switch (userSelection)
                     {
                         case 1: errorCode = 0; addMenu(errorCode, mealHistory); break;  // Add Meal menu
@@ -53,9 +37,7 @@ namespace CaloricIntakeConsole
                     userSelection = -1;
                 }
             }
-
-            mealJSON = JsonSerializer.Serialize(mealHistory, options);
-            File.WriteAllText(fileJSON, mealJSON);
+            writeJSON(mealHistory, fileJSON);
         }
 
         static void displayMainmenu(int error_code)
@@ -506,6 +488,25 @@ namespace CaloricIntakeConsole
                 }
             }
             return formatted_text;
+        }
+        static MealHistory readJSON(string fileJSON)  // Read from existing JSON meal data file
+        {
+            var options = new JsonSerializerOptions { IncludeFields = true };  // Include fields for serializing objects with objects
+            if (File.Exists(fileJSON))
+            {
+                string mealJSON = File.ReadAllText(fileJSON);
+                return JsonSerializer.Deserialize<MealHistory>(mealJSON, options);
+            }
+            else
+            {
+                return null;
+            }
+        }
+        static void writeJSON(MealHistory mealHistory, string fileJSON)  // Write to JSON meal data file
+        {
+            var options = new JsonSerializerOptions { IncludeFields = true };  // Include fields for serializing objects with objects
+            string mealJSON = JsonSerializer.Serialize(mealHistory, options);
+            File.WriteAllText(fileJSON, mealJSON);
         }
     }
 
