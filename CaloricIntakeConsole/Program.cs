@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Linq;
+using System.Security.Policy;
 
 namespace CaloricIntakeConsole
 {
@@ -54,9 +55,7 @@ namespace CaloricIntakeConsole
                 else if (userSelection == 2)
                 {
                     errorCode = 0;
-                    Console.Clear();
-                    Console.WriteLine("Edit Meal Menu");
-                    Console.ReadKey();
+                    editMenu(errorCode, mealHistory);                    
                 }
                 else if (userSelection == 3)
                 {
@@ -81,6 +80,42 @@ namespace CaloricIntakeConsole
             Console.WriteLine("\n   Main Menu\n\n1. Add Meal\n2. Edit Meal\n3. View History\n0. Exit\n");
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("#> ");
+        }
+        static void editMenu(int error_code, MealHistory mealHistory)
+        {
+            int userSelection = -1;
+
+            while (userSelection != 0)
+            {
+                Console.Clear();
+                errorOutput(error_code);
+                appTitle();
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("\n   Edit Meal\n\n1. Edit/Delete Meal\n0. Save & Exit\n");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write("#> ");
+
+                try
+                {
+                    userSelection = Convert.ToInt32(Console.ReadLine());
+                }
+                catch
+                {
+                    error_code = 1;
+                    userSelection = -1;
+                }
+
+                if (userSelection == 1)
+                {
+                    displayMeals(mealHistory);
+                    error_code = 0;
+                }                
+                else if (userSelection == 0)
+                {
+                    error_code = 0;
+                    userSelection = 0;
+                }    
+            }
         }
         static void viewHistory(int error_code, MealHistory mealHistory)
         {
@@ -220,7 +255,6 @@ namespace CaloricIntakeConsole
 
             Console.ReadKey();
         }
-
         static void addMenu(int error_code, MealHistory mealHistory)
         {
             int userSelection = -1;
@@ -234,7 +268,7 @@ namespace CaloricIntakeConsole
                 appTitle();
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("\n   Add Meal\n\n1. Set Date\n2. Set Time\n3. Add Item\n4. Remove Item\n0. Save & Exit\n");
-                displayMeal(temp_meal);
+                displayMealMenu(temp_meal);
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.Write("#> ");
 
@@ -378,8 +412,20 @@ namespace CaloricIntakeConsole
             }
             mealHistory.AddMeal(temp_meal);
         }
+        static void displayMeals(MealHistory mealHistory)
+        {
+            List<MealList> mealList = mealHistory.ListMeal();
 
-        static void displayMeal(Meal temp_meal)
+            Console.WriteLine("Index \t Date \t Time \t Calories");
+            foreach (MealList item in mealList)
+            {
+                Console.WriteLine(item.Index + "\t" + item.Date + "\t" + item.Time + "\t" + item.Calories);
+            }
+
+            Console.WriteLine();
+            Console.ReadKey();
+        }
+        static void displayMealMenu(Meal temp_meal)
         {
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.Write("[Meal Date]: ");
@@ -413,7 +459,6 @@ namespace CaloricIntakeConsole
             }
             Console.WriteLine("\n");
         }
-
         static void errorOutput(int error_code)
         {
             if (error_code == 0)
@@ -444,7 +489,6 @@ namespace CaloricIntakeConsole
                 Console.WriteLine("[Status: No meal items, add one first]\n");
             }
         }
-
         static void appTitle()
         {
             Console.ForegroundColor = ConsoleColor.Blue;
@@ -452,11 +496,9 @@ namespace CaloricIntakeConsole
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine("+-----------------+");
         }
-
         static string formatOutput(int column_width, string column_text)
         {
             string header_text = "| ";
-            string padding = "";
             int header_length = header_text.Length;
             int body_length = column_width - header_length;
             int text_length = column_text.Length;
@@ -489,16 +531,30 @@ namespace CaloricIntakeConsole
             meals.Add(new Meal { Date = meal.Date, Time = meal.Time, mealitems = meal.mealitems });
             return true;
         }
-    }
+        public List<MealList> ListMeal()
+        {
+            List<MealList> mealList = new List<MealList>();
+            int index = 0;
 
+            foreach (Meal item in meals)
+            {
+                int mealTotalCalories = 0;
+                foreach (MealItems mealItem in item.mealitems)
+                {
+                    mealTotalCalories += mealItem.Calories;
+                }
+                mealList.Add(new MealList { Index = index, Date = item.Date, Time = item.Time, Calories = mealTotalCalories });
+                index++;
+            }
+            return mealList;
+        }
+    }
     public class Meal
     {
+        public List<MealItems> mealitems = new List<MealItems>();
         public string Date { get; set; }
         public string Time { get; set; }
-
-        public List<MealItems> mealitems = new List<MealItems>();
     }
-
     public class MealItems
     {
         public string Quantity { get; set; }
@@ -506,10 +562,16 @@ namespace CaloricIntakeConsole
         public string Description { get; set; }
         public int Calories { get; set; }
     }
-
     public class DailySummary
     {
         public string Date { get; set; }
         public int TotalCalories { get; set; }
+    }
+    public class MealList
+    {
+        public int Index { get; set; }
+        public string Date { get; set; }
+        public string Time { get; set; }
+        public int Calories { get; set; }
     }
 }
