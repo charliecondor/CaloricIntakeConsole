@@ -25,53 +25,40 @@ namespace CaloricIntakeConsole
             {
                 mealJSON = JsonSerializer.Serialize(mealHistory, options);
                 File.WriteAllText(fileJSON, mealJSON);
-            }
-
-            Console.Title = "Caloric Intake Console App";
-            Console.Clear();
+            }            
 
             int userSelection = -1;
             int errorCode = 0;
 
             while (userSelection != 0)
             {
-                mainMenu(errorCode);
+                Console.Title = "Caloric Intake Console App";
+                displayMainmenu(errorCode);
 
                 try
                 {
                     userSelection = Convert.ToInt32(Console.ReadLine());
+
+                    switch (userSelection)
+                    {
+                        case 1: errorCode = 0; addMenu(errorCode, mealHistory); break;  // Add Meal menu
+                        case 2: errorCode = 0; editMenu(errorCode, mealHistory); break;  // Edit Meal menu
+                        case 3: errorCode = 0; viewHistory(errorCode, mealHistory); break;  // View Meal history chart
+                        default: errorCode = 1; break;  // When user doesn't select viable option
+                    }
                 }
                 catch
                 {
                     errorCode = 1;
                     userSelection = -1;
                 }
+            }
 
-                if (userSelection == 1)
-                {
-                    errorCode = 0;
-                    addMenu(errorCode, mealHistory);
-                }
-                else if (userSelection == 2)
-                {
-                    errorCode = 0;
-                    editMenu(errorCode, mealHistory);                    
-                }
-                else if (userSelection == 3)
-                {
-                    errorCode = 0;
-                    viewHistory(errorCode, mealHistory);
-                }
-                else
-                {
-                    errorCode = 1;
-                }
-            }            
             mealJSON = JsonSerializer.Serialize(mealHistory, options);
             File.WriteAllText(fileJSON, mealJSON);
         }
 
-        static void mainMenu(int error_code)
+        static void displayMainmenu(int error_code)
         {
             Console.Clear();
             errorOutput(error_code);
