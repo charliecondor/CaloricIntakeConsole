@@ -239,32 +239,19 @@ namespace CaloricIntakeConsole
                 try
                 {
                     userSelection = Convert.ToInt32(Console.ReadLine());
+                    switch (userSelection)
+                    {
+                        case 1: temp_meal.Date = addMealDate(ref error_code); break;
+                        case 2: temp_meal.Time = addMealTime(ref error_code); break;
+                        case 3: temp_meal.mealitems.Add(addMealItem(ref error_code)); break;
+                        case 4: removeMealItem(ref error_code, ref temp_meal); break;
+                        default: checkMealItems(ref error_code, ref temp_meal, ref userSelection); break;
+                    }
                 }
                 catch
                 {
                     error_code = 1;
                     userSelection = -1;
-                }
-
-                if (userSelection == 1)
-                {
-                    temp_meal.Date = addMealDate(ref error_code);
-                }
-                else if (userSelection == 2)
-                {
-                    temp_meal.Time = addMealTime(ref error_code);
-                }
-                else if (userSelection == 3)
-                {
-                    temp_meal.mealitems.Add(addMealItem(ref error_code));
-                }
-                else if (userSelection == 4)
-                {
-                    removeMealItem(ref error_code, ref temp_meal);                                         
-                }
-                else if (userSelection == 0)
-                {
-                    checkMealItems(ref error_code, ref temp_meal, ref userSelection);
                 }
             }
             mealHistory.AddMeal(temp_meal);
