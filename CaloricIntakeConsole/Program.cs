@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Linq;
+using System.Security.Policy;
 
 namespace CaloricIntakeConsole
 {
@@ -11,21 +12,20 @@ namespace CaloricIntakeConsole
         static void Main(string[] args)
         {
             MealHistory mealHistory = new MealHistory();  // Instantiating a MealHistory object for storing the JSON meal data
-            string fileJSON = "mealHistoryJSON.json";  // Filename for JSON meal data
-            mealHistory = readJSON(fileJSON);  // Checks if JSON meal data exists, then deserializes it into MealHistory object
+            mealHistory = mealHistory.loadJSON();
+            Console.Title = "Caloric Intake Console App";
 
             int userSelection = -1;
             int errorCode = 0;
             while (userSelection != 0)
-            {
-                Console.Title = "Caloric Intake Console App";
+            {                
                 displayMainMenu(errorCode);
                 try
                 {
                     userSelection = Convert.ToInt32(Console.ReadLine());
                     switch (userSelection)
                     {
-                        case 1: errorCode = 0; addMenu(errorCode, mealHistory); break;  // Add Meal menu
+                        case 1: errorCode = 0; addMealMenu(errorCode, mealHistory); break;  // Add Meal menu
                         case 2: errorCode = 0; editMenu(errorCode, mealHistory); break;  // Edit Meal menu
                         case 3: errorCode = 0; viewHistory(errorCode, mealHistory); break;  // View Meal history chart
                         default: errorCode = 1; break;  // When user doesn't select viable option
@@ -37,7 +37,7 @@ namespace CaloricIntakeConsole
                     userSelection = -1;
                 }
             }
-            writeJSON(mealHistory, fileJSON);
+            mealHistory.saveJSON();
         }
         static void displayMainMenu(int error_code)
         {
@@ -220,7 +220,7 @@ namespace CaloricIntakeConsole
             
             Console.ReadKey();
         }
-        static void addMenu(int error_code, MealHistory mealHistory)
+        static void addMealMenu(int error_code, MealHistory mealHistory)
         {
             int userSelection = -1;
             Meal temp_meal = new Meal();
@@ -350,26 +350,7 @@ namespace CaloricIntakeConsole
             string text = "| " + column_text;
             text = text.PadRight(column_width);            
             return text.Substring(0, column_width);
-        }
-        static MealHistory readJSON(string fileJSON)  // Read from existing JSON meal data file
-        {
-            var options = new JsonSerializerOptions { IncludeFields = true };  // Include fields for serializing objects with objects
-            if (File.Exists(fileJSON))
-            {
-                string mealJSON = File.ReadAllText(fileJSON);
-                return JsonSerializer.Deserialize<MealHistory>(mealJSON, options);
-            }
-            else
-            {
-                return null;
-            }
-        }
-        static void writeJSON(MealHistory mealHistory, string fileJSON)  // Write to JSON meal data file
-        {
-            var options = new JsonSerializerOptions { IncludeFields = true };  // Include fields for serializing objects with objects
-            string mealJSON = JsonSerializer.Serialize(mealHistory, options);
-            File.WriteAllText(fileJSON, mealJSON);
-        }
+        }                
         static string addMealDate(ref int error_code)
         {
             Console.Write("Enter Meal Date [YYYY/MM/DD]: ");
@@ -467,6 +448,7 @@ namespace CaloricIntakeConsole
 
     public class MealHistory
     {
+        private const string fileJSON = "mealHistoryJSON.json";  // Filename for JSON meal data
         public List<Meal> meals = new List<Meal>();
         public bool AddMeal(Meal meal)
         {
@@ -489,6 +471,17 @@ namespace CaloricIntakeConsole
                 index++;
             }
             return mealList;
+        }
+        public MealHistory loadJSON()
+        {
+            var options = new JsonSerializerOptions { IncludeFields = true };  // Include fields for serializing objects with objects            
+            return File.Exists(fileJSON) ? JsonSerializer.Deserialize<MealHistory>(File.ReadAllText(fileJSON), options) : null;            
+        }
+        public void saveJSON()
+        {
+            var options = new JsonSerializerOptions { IncludeFields = true };  // Include fields for serializing objects with objects
+            string mealJSON = JsonSerializer.Serialize(this, options);
+            File.WriteAllText(fileJSON, mealJSON);
         }
     }
     public class Meal
