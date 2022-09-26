@@ -289,15 +289,19 @@ namespace CaloricIntakeConsole
             if (temp_meal.mealitems != null)
             {
                 int entry_number = 0;
+                string entry, qty, unit, desc, cal, end;
+
                 foreach (MealItems item in temp_meal.mealitems)
                 {
-                    string format_qty = item.Quantity;
-                    string format_unit = item.UnitMeasurement;
-                    string format_desc = item.Description;
-                    string format_cal = Convert.ToString(item.Calories);
+                    entry = formatOutput(8, "[" + Convert.ToString(entry_number) + "]");
+                    qty = formatOutput(8, item.Quantity);
+                    unit = formatOutput(8, item.UnitMeasurement);
+                    desc = formatOutput(24, item.Description);
+                    cal = formatOutput(16, Convert.ToString(item.Calories));
+                    end = formatOutput(8, "");
 
-                    Console.WriteLine(formatOutput(8, "[" + entry_number + "]") + formatOutput(8, format_qty) + formatOutput(8, format_unit)
-                        + formatOutput(24, format_desc) + formatOutput(16, format_cal) + formatOutput(8, ""));
+                    Console.WriteLine(entry + qty + unit + desc + cal + end);
+
                     entry_number++;
                 }
             }
