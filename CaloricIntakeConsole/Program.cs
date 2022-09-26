@@ -217,7 +217,7 @@ namespace CaloricIntakeConsole
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.Write("\t|\n");
             Console.WriteLine("+---------------------------------------+");
-
+            
             Console.ReadKey();
         }
         static void addMenu(int error_code, MealHistory mealHistory)
@@ -342,28 +342,10 @@ namespace CaloricIntakeConsole
             Console.WriteLine("+-----------------+");
         }
         static string formatOutput(int column_width, string column_text)
-        {
-            string header_text = "| ";
-            int header_length = header_text.Length;
-            int body_length = column_width - header_length;
-            int text_length = column_text.Length;
-            string formatted_text = "";
-
-            if (text_length >= body_length)
-            {
-                formatted_text = header_text + column_text.Substring(0, body_length);
-            }
-            else
-            {
-                formatted_text = header_text + column_text;
-                int empty_spaces = column_width - header_length - text_length;
-                while (empty_spaces > 0)
-                {
-                    formatted_text += " ";
-                    empty_spaces--;
-                }
-            }
-            return formatted_text;
+        {                        
+            string text = "| " + column_text;
+            text = text.PadRight(column_width);            
+            return text.Substring(0, column_width);
         }
         static MealHistory readJSON(string fileJSON)  // Read from existing JSON meal data file
         {
