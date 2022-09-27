@@ -25,9 +25,9 @@ namespace CaloricIntakeConsole
                     userSelection = Convert.ToInt32(Console.ReadLine());
                     switch (userSelection)
                     {
-                        case 1: addMealMenu(errorCode, mealHistory); break;  // Add Meal menu
-                        case 2: editMenu(errorCode, mealHistory); break;  // Edit Meal menu
-                        case 3: viewHistory(errorCode, mealHistory); break;  // View Meal history chart
+                        case 1: addMealMenu(mealHistory); break;  // Add Meal menu
+                        case 2: editMenu(mealHistory); break;  // Edit Meal menu
+                        case 3: viewHistory(mealHistory); break;  // View Meal history chart
                         default: errorCode = 1; break;  // When user doesn't select viable option
                     }
                 }
@@ -48,12 +48,13 @@ namespace CaloricIntakeConsole
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("#> ");
         }
-        static void editMenu(int error_code, MealHistory mealHistory)
+        static void editMenu(MealHistory mealHistory)
         {
             int userSelection = -1;
+            int errorCode = 0;
             while (userSelection != 0)
             {
-                errorOutput(error_code);
+                errorOutput(errorCode);
                 appTitle();
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("\n   Edit Meal\n\n1. Edit/Delete Meal\n0. Save & Exit\n");
@@ -67,25 +68,25 @@ namespace CaloricIntakeConsole
                     if (userSelection == 1)
                     {
                         displayMeals(mealHistory);
-                        error_code = 0;
+                        errorCode = 0;
                     }
                     else if (userSelection == 0)
                     {
-                        error_code = 0;
+                        errorCode = 0;
                         userSelection = 0;
                     }
                 }
                 catch
                 {
-                    error_code = 1;
+                    errorCode = 1;
                     userSelection = -1;
                 }
             }
         }
-        static void viewHistory(int error_code, MealHistory mealHistory)
+        static void viewHistory(MealHistory mealHistory)
         {
-            List<DailySummary> dailySummary = new List<DailySummary>();
-            errorOutput(error_code);
+            List<DailySummary> dailySummary = new List<DailySummary>();            
+            errorOutput();
             appTitle();
 
             Console.ForegroundColor = ConsoleColor.Blue;
@@ -220,15 +221,16 @@ namespace CaloricIntakeConsole
             
             Console.ReadKey();
         }
-        static void addMealMenu(int error_code, MealHistory mealHistory)
+        static void addMealMenu(MealHistory mealHistory)
         {
             int userSelection = -1;
+            int errorCode = 0;
             Meal temp_meal = new Meal();
             List<MealItems> temp_items = new List<MealItems>();
 
             while (userSelection != 0)
             {
-                errorOutput(error_code);
+                errorOutput(errorCode);
                 appTitle();
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("\n   Add Meal\n\n1. Set Date\n2. Set Time\n3. Add Item\n4. Remove Item\n0. Save & Exit\n");
@@ -241,16 +243,16 @@ namespace CaloricIntakeConsole
                     userSelection = Convert.ToInt32(Console.ReadLine());
                     switch (userSelection)
                     {
-                        case 1: temp_meal.Date = addMealDate(ref error_code); break;
-                        case 2: temp_meal.Time = addMealTime(ref error_code); break;
-                        case 3: temp_meal.mealitems.Add(addMealItem(ref error_code)); break;
-                        case 4: removeMealItem(ref error_code, ref temp_meal); break;
-                        default: if (temp_meal.IsNullOrEmpty()) { error_code = 3; userSelection = -1; }; break;
+                        case 1: temp_meal.Date = addMealDate(ref errorCode); break;
+                        case 2: temp_meal.Time = addMealTime(ref errorCode); break;
+                        case 3: temp_meal.mealitems.Add(addMealItem(ref errorCode)); break;
+                        case 4: removeMealItem(ref errorCode, ref temp_meal); break;
+                        default: if (temp_meal.IsNullOrEmpty()) { errorCode = 3; userSelection = -1; }; break;
                     }
                 }
                 catch
                 {
-                    error_code = 1;
+                    errorCode = 1;
                     userSelection = -1;
                 }
             }
@@ -307,7 +309,7 @@ namespace CaloricIntakeConsole
             }
             Console.WriteLine("\n");
         }
-        static void errorOutput(int error_code)
+        static void errorOutput(int error_code = 0)
         {
             Console.Clear();
             if (error_code == 0)
