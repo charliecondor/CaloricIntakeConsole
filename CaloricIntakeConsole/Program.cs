@@ -3,7 +3,6 @@ using System.IO;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Linq;
-using System.Security.Policy;
 
 namespace CaloricIntakeConsole
 {
@@ -22,12 +21,13 @@ namespace CaloricIntakeConsole
                 displayMainMenu(errorCode);
                 try
                 {
+                    errorCode = 0;
                     userSelection = Convert.ToInt32(Console.ReadLine());
                     switch (userSelection)
                     {
-                        case 1: errorCode = 0; addMealMenu(errorCode, mealHistory); break;  // Add Meal menu
-                        case 2: errorCode = 0; editMenu(errorCode, mealHistory); break;  // Edit Meal menu
-                        case 3: errorCode = 0; viewHistory(errorCode, mealHistory); break;  // View Meal history chart
+                        case 1: addMealMenu(errorCode, mealHistory); break;  // Add Meal menu
+                        case 2: editMenu(errorCode, mealHistory); break;  // Edit Meal menu
+                        case 3: viewHistory(errorCode, mealHistory); break;  // View Meal history chart
                         default: errorCode = 1; break;  // When user doesn't select viable option
                     }
                 }
