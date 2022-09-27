@@ -245,7 +245,7 @@ namespace CaloricIntakeConsole
                         case 2: temp_meal.Time = addMealTime(ref error_code); break;
                         case 3: temp_meal.mealitems.Add(addMealItem(ref error_code)); break;
                         case 4: removeMealItem(ref error_code, ref temp_meal); break;
-                        default: checkMealItems(ref error_code, ref temp_meal, ref userSelection); break;
+                        default: if (temp_meal.IsNullOrEmpty()) { error_code = 3; userSelection = -1; }; break;
                     }
                 }
                 catch
@@ -430,20 +430,7 @@ namespace CaloricIntakeConsole
             {
                 error_code = 1;
             }
-        }
-        static void checkMealItems(ref int error_code, ref Meal tempmeal, ref int userSelection)
-        {
-            if (tempmeal.Date == null || tempmeal.Time == null || tempmeal.mealitems == null)
-            {
-                error_code = 3;
-                userSelection = -1;
-            }
-            else
-            {
-                error_code = 0;
-                userSelection = 0;
-            }
-        }
+        }        
     }
 
     public class MealHistory
@@ -489,13 +476,17 @@ namespace CaloricIntakeConsole
         public List<MealItems> mealitems = new List<MealItems>();
         public string Date { get; set; }
         public string Time { get; set; }
+        public bool IsNullOrEmpty()
+        {
+            return String.IsNullOrEmpty(Date) || String.IsNullOrEmpty(Time) || !mealitems.Any();
+        }
     }
     public class MealItems
     {
         public string Quantity { get; set; }
         public string UnitMeasurement { get; set; }
         public string Description { get; set; }
-        public int Calories { get; set; }
+        public int Calories { get; set; }        
     }
     public class DailySummary
     {
