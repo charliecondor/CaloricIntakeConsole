@@ -19,6 +19,8 @@ namespace CaloricIntakeConsole
             while (userSelection != 0)
             {                
                 displayMainMenu(errorCode);
+                Console.Clear();
+                drawMainMenu();
                 try
                 {
                     errorCode = 0;
@@ -47,6 +49,49 @@ namespace CaloricIntakeConsole
             Console.WriteLine("\n   Main Menu\n\n1. Add Meal\n2. Edit Meal\n3. View History\n0. Exit\n");
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("#> ");
+        }
+        static void drawMainMenu()
+        {
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.WriteLine("╔═════════════════════════╗");
+            Console.Write("║");
+            Console.Write("   Caloric Intake ");
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("v0.6   ");
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.Write("║\n╠═════════════════════════╣\n║");            
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.Write("        Main Menu        ");            
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.Write("║\n╟─────────────────────────╢\n║");            
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("   1. Add Meal           ");
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.Write("║\n║");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("   2. Edit Meal          ");
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.Write("║\n║");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("   3. View History       ");
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.Write("║\n║");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("   0. Exit               ");
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.Write("║\n╟─────────────────────────╢\n║");            
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("   #>                    ");
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.Write("║\n╠═════════════════════════╣\n║");
+            Console.ForegroundColor = ConsoleColor.DarkBlue;            
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write("   Status: No Errors     ");
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.Write("║\n║                         ║\n");            
+            Console.WriteLine("╚═════════════════════════╝");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.SetCursorPosition(6, 10);
         }
         static void editMenu(MealHistory mealHistory)
         {
@@ -197,7 +242,13 @@ namespace CaloricIntakeConsole
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.Write("\t|\n");
             Console.WriteLine("+---------------------------------------+");
-            
+
+            Console.SetCursorPosition(30, 5);
+            Console.Write("This is a test");
+            Console.SetCursorPosition(30, 6);
+            Console.Write("This is a test2");
+            Console.SetCursorPosition(30, 7);
+            Console.Write("This is a test3");
             Console.ReadKey();
         }
         static void addMealMenu(MealHistory mealHistory)
@@ -288,6 +339,20 @@ namespace CaloricIntakeConsole
             }
             Console.WriteLine("\n");
         }
+        static void setError(int errorCode = 0)
+        {
+            Console.SetCursorPosition(6, 15);
+            switch (errorCode)
+            {
+                case 0: break;
+                case 1: break;
+                case 2: break;
+                case 3: break;
+                default: break;
+            }
+
+            Console.ForegroundColor = ConsoleColor.White;
+        }
         static void errorOutput(int error_code = 0)
         {
             Console.Clear();
@@ -322,7 +387,7 @@ namespace CaloricIntakeConsole
         static void appTitle()
         {
             Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine("Caloric Intake v0.5");
+            Console.WriteLine("Caloric Intake v0.6");
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine("+-----------------+");
         }
