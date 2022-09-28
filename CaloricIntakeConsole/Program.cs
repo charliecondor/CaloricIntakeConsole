@@ -11,7 +11,7 @@ namespace CaloricIntakeConsole
         static void Main(string[] args)
         {
             MealHistory mealHistory = new MealHistory();  // Instantiating a MealHistory object for storing the JSON meal data
-            mealHistory = mealHistory.loadJSON();
+            mealHistory = mealHistory.LoadJSON();            
             Console.Title = "Caloric Intake Console App";
 
             int userSelection = -1;
@@ -37,7 +37,7 @@ namespace CaloricIntakeConsole
                     userSelection = -1;
                 }
             }
-            mealHistory.saveJSON();
+            mealHistory.SaveJSON();
         }
         static void displayMainMenu(int error_code)
         {
@@ -94,28 +94,7 @@ namespace CaloricIntakeConsole
             Console.WriteLine("| Date          | Total Calories        |");
             Console.WriteLine("+---------------+-----------------------+");
 
-            foreach (Meal meal in mealHistory.meals)
-            {
-                if (!dailySummary.Exists(x => x.Date == meal.Date))
-                {
-                    dailySummary.Add(new DailySummary { Date = meal.Date, TotalCalories = 0 });
-                }
-            }
-
-            dailySummary.Sort((x, y) => x.Date.CompareTo(y.Date));
-            foreach (DailySummary day in dailySummary)
-            {
-                foreach (Meal meal in mealHistory.meals)
-                {
-                    if (day.Date == meal.Date)
-                    {
-                        foreach (MealItems mealitem in meal.mealitems)
-                        {
-                            day.TotalCalories += mealitem.Calories;
-                        }
-                    }
-                }
-            }
+            dailySummary = mealHistory.GenerateSummary();
 
             foreach (DailySummary item in dailySummary)
             {
@@ -461,16 +440,46 @@ namespace CaloricIntakeConsole
             }
             return mealList;
         }
-        public MealHistory loadJSON()
+        public MealHistory LoadJSON()
         {
             var options = new JsonSerializerOptions { IncludeFields = true };  // Include fields for serializing objects with objects            
             return File.Exists(fileJSON) ? JsonSerializer.Deserialize<MealHistory>(File.ReadAllText(fileJSON), options) : null;            
         }
-        public void saveJSON()
+        public void SaveJSON()
         {
             var options = new JsonSerializerOptions { IncludeFields = true };  // Include fields for serializing objects with objects
             string mealJSON = JsonSerializer.Serialize(this, options);
             File.WriteAllText(fileJSON, mealJSON);
+        }
+        public List<DailySummary> GenerateSummary()
+        {
+            List<DailySummary> dailySummary = new List<DailySummary>();
+
+            foreach (Meal meal in meals)
+            {
+                if (!dailySummary.Exists(x => x.Date == meal.Date))
+                {
+                    dailySummary.Add(new DailySummary { Date = meal.Date, TotalCalories = 0 });
+                }
+            }
+
+            dailySummary.Sort((x, y) => x.Date.CompareTo(y.Date));
+
+            foreach (DailySummary day in dailySummary)
+            {
+                foreach (Meal meal in meals)
+                {
+                    if (day.Date == meal.Date)
+                    {
+                        foreach (MealItems mealitem in meal.mealitems)
+                        {
+                            day.TotalCalories += mealitem.Calories;
+                        }
+                    }
+                }
+            }
+
+            return dailySummary;
         }
     }
     public class Meal
@@ -481,6 +490,21 @@ namespace CaloricIntakeConsole
         public bool IsNullOrEmpty()
         {
             return String.IsNullOrEmpty(Date) || String.IsNullOrEmpty(Time) || !mealitems.Any();
+        }
+        public bool UpdateDate(string str_date)
+        {
+            try
+            {
+                DateTime mealDate = new DateTime(Convert.ToInt32(str_date.Substring(0, 4)),
+                    Convert.ToInt32(str_date.Substring(5, 2)),
+                    Convert.ToInt32(str_date.Substring(8, 2)));
+                Date = mealDate.ToString("yyyy/MM/dd");
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
     public class MealItems
