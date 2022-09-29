@@ -85,10 +85,11 @@ namespace CaloricIntakeConsole
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("   #>                    ");
             Console.ForegroundColor = ConsoleColor.DarkBlue;
-            Console.Write("║\n╠═════════════════════════╣\n║");
-            setError(errorCode);
-            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.Write("║\n╠═════════════════════════╣\n");            
+            Console.WriteLine("║                         ║");
+            Console.WriteLine("║                         ║");
             Console.WriteLine("╚═════════════════════════╝");
+            setError(errorCode);
             Console.ForegroundColor = ConsoleColor.White;
             Console.SetCursorPosition(6, 10);
         }
@@ -339,29 +340,27 @@ namespace CaloricIntakeConsole
             {
                 case 0:
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write("  Status: No Errors     ");
-                    Console.ForegroundColor = ConsoleColor.DarkBlue;
-                    Console.Write("║\n║                         ║\n");
+                    Console.Write("  Status: No Errors     ");                    
                     break;
                 case 1:
-                    Console.Write("  Status: Error         ");
+                    Console.Write("  Status: Error         ");                                    
                     Console.SetCursorPosition(2, 13);
-                    Console.Write("  Invalid Input     \n");
+                    Console.Write("  Invalid Input         ");
                     break;
                 case 2:
                     Console.Write("  Status: Error         ");
                     Console.SetCursorPosition(2, 13);
-                    Console.Write("  Invalid Input Format\n");
+                    Console.Write("  Invalid Input Format  ");
                     break;
                 case 3:
                     Console.Write("  Status: Error         ");
                     Console.SetCursorPosition(2, 13);
-                    Console.Write("  Missing Meal Data\n");
+                    Console.Write("  Missing Meal Data     ");
                     break;
                 case 4:
                     Console.Write("  Status: Error         ");
                     Console.SetCursorPosition(2, 13);
-                    Console.Write("  Missing Meal Item\n");
+                    Console.Write("  Missing Meal Item     ");
                     break;
             }
             Console.ForegroundColor = ConsoleColor.White;
