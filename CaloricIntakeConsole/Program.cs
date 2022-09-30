@@ -26,7 +26,7 @@ namespace CaloricIntakeConsole
                     switch (userSelection)
                     {
                         case 1: addMealMenu(mealHistory); break;  // Add Meal menu
-                        case 2: editMenu(mealHistory); break;  // Edit Meal menu
+                        case 2: editMealMenu(mealHistory); break;  // Edit Meal menu
                         case 3: drawViewHistory(mealHistory); break;  // View Meal history chart
                         default: errorCode = 1; break;  // When user doesn't select viable option
                     }
@@ -71,6 +71,31 @@ namespace CaloricIntakeConsole
                 }
             }
             mealHistory.AddMeal(temp_meal);
+        }
+        static void editMealMenu(MealHistory mealHistory)
+        {
+            int userSelection = -1;
+            int errorCode = 0;
+
+            while (userSelection != 0)
+            {
+                drawEditMenu(errorCode, mealHistory);
+                try
+                {
+                    userSelection = Convert.ToInt32(Console.ReadLine());
+                    switch (userSelection)
+                    {
+                        case 1: break;
+                        case 2: break;
+                        default: break;
+                    }
+                }
+                catch
+                {
+                    errorCode = 1;
+                    userSelection = -1;
+                }
+            }
         }
         static int editMealInfo(Meal meal)
         {
@@ -290,6 +315,10 @@ namespace CaloricIntakeConsole
                 last_row++;
             }
             Console.SetCursorPosition(7, 10);
+        }
+        static void drawEditMenu(int errorCode, MealHistory mealHistory)
+        {
+            return;
         }
         static void drawViewHistory(MealHistory mealHistory)
         {
