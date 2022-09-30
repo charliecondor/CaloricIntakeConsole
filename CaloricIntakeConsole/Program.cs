@@ -18,8 +18,6 @@ namespace CaloricIntakeConsole
             int errorCode = 0;
             while (userSelection != 0)
             {                
-                //displayMainMenu(errorCode);
-                //Console.Clear();
                 drawMainMenu(errorCode);
                 try
                 {
@@ -40,16 +38,7 @@ namespace CaloricIntakeConsole
                 }
             }
             mealHistory.SaveJSON();
-        }
-        static void displayMainMenu(int error_code)
-        {
-            errorOutput(error_code);
-            appTitle();
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("\n   Main Menu\n\n1. Add Meal\n2. Edit Meal\n3. View History\n0. Exit\n");
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.Write("#> ");
-        }
+        }        
         static void drawMainMenu(int errorCode)
         {
             Console.Clear();
@@ -194,7 +183,7 @@ namespace CaloricIntakeConsole
                     lifetime_low_date = day.Date;
                 }
             }
-            int lifetime_average_calories = lifetime_total_calories / dailySummary.Count;                     
+            int lifetime_average_calories = lifetime_total_calories / dailySummary.Count;
 
             int tenday_total_calories = new int();
             int tenday_high_calories = new int();
