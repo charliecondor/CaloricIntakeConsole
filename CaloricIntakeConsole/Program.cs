@@ -185,6 +185,7 @@ namespace CaloricIntakeConsole
             }
             int lifetime_average_calories = lifetime_total_calories / dailySummary.Count;
 
+            dailySummary.Reverse();
             int tenday_total_calories = new int();
             int tenday_high_calories = new int();
             int tenday_low_calories = 100000;
