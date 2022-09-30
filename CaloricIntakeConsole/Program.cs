@@ -59,7 +59,7 @@ namespace CaloricIntakeConsole
                     switch (userSelection)
                     {
                         case 1: errorCode = editMealInfo(temp_meal); break;
-                        case 2: temp_meal.mealitems.Add(addMealItem(ref errorCode)); break;
+                        case 2: errorCode = addMealItem(temp_meal); break;
                         case 3: errorCode = removeMealItem(temp_meal); break;
                         default: if (temp_meal.IsNullOrEmpty()) { errorCode = 3; userSelection = -1; }; break;
                     }
@@ -97,7 +97,7 @@ namespace CaloricIntakeConsole
                 return 2;
             }
         }
-        static MealItems addMealItem(ref int error_code)
+        static int addMealItem(Meal meal)
         {
             try
             {
@@ -116,27 +116,15 @@ namespace CaloricIntakeConsole
                 Console.Write("Enter Calories: ");
                 string str_item_cals = Console.ReadLine();
                 int int_item_cals = 0;
-                if (!String.IsNullOrEmpty(str_item_cals)) int_item_cals = Convert.ToInt32(str_item_cals);
-
-                error_code = 0;
-                return new MealItems
-                {
-                    Quantity = item_qty,
-                    UnitMeasurement = item_unit,
-                    Description = item_desc,
-                    Calories = int_item_cals
-                };
+                if (!String.IsNullOrEmpty(str_item_cals)) int_item_cals = Convert.ToInt32(str_item_cals);                
+                MealItems mealItems = new MealItems { Quantity = item_qty, UnitMeasurement = item_unit, 
+                    Description = item_desc, Calories = int_item_cals};
+                meal.mealitems.Add(mealItems);
+                return 0;
             }
             catch
             {
-                error_code = 1;
-                return new MealItems
-                {
-                    Quantity = "",
-                    UnitMeasurement = "",
-                    Description = "",
-                    Calories = 0
-                };
+                return 1;
             }
         }
         static int removeMealItem(Meal meal)
