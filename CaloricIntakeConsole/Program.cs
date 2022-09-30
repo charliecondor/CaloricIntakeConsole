@@ -148,20 +148,20 @@ namespace CaloricIntakeConsole
             Console.SetCursorPosition(27, row_count);
             Console.WriteLine("╚════════════╩══════╝");
 
-            Console.SetCursorPosition(49, 0);
-            Console.WriteLine("╔══════════════════════╦══════════════════╗");
-            Console.SetCursorPosition(49, 1);
-            Console.WriteLine("║        Summary       ║                  ║");
-            Console.SetCursorPosition(49, 2);
-            Console.WriteLine("╟──────────────────────╫──────────────────╢");
+            Console.SetCursorPosition(48, 0);
+            Console.WriteLine("╔═════════════════════════════════════════╗");
+            Console.SetCursorPosition(48, 1);
+            Console.WriteLine("║                 Summary                 ║");
+            Console.SetCursorPosition(48, 2);
+            Console.WriteLine("╟──────────────────────╥──────────────────╢");
             row_count = 3;
             for (int i = 0; i < 8; i++)
             {
-                Console.SetCursorPosition(49, row_count);
+                Console.SetCursorPosition(48, row_count);
                 Console.WriteLine("║                      ║                  ║");
                 row_count++;
             }
-            Console.SetCursorPosition(49, row_count);
+            Console.SetCursorPosition(48, row_count);
             Console.WriteLine("╚══════════════════════╩══════════════════╝");            
 
             int lifetime_total_calories = 0;
@@ -177,7 +177,7 @@ namespace CaloricIntakeConsole
                     lifetime_high_calories = day.TotalCalories;
                     lifetime_high_date = day.Date;
                 }
-                if (lifetime_low_calories > day.TotalCalories && day.Date != dailySummary.Last().Date)
+                if (lifetime_low_calories > day.TotalCalories && day.Date != dailySummary.First().Date)
                 {
                     lifetime_low_calories = day.TotalCalories;
                     lifetime_low_date = day.Date;
@@ -209,51 +209,51 @@ namespace CaloricIntakeConsole
             }
             int tenday_average_calories = tenday_total_calories / 10;
 
-            Console.SetCursorPosition(51, 3);
+            Console.SetCursorPosition(50, 3);
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("Lifetime total".PadLeft(20));
-            Console.SetCursorPosition(74, 3);            
+            Console.SetCursorPosition(73, 3);            
             Console.Write(lifetime_total_calories);
 
-            Console.SetCursorPosition(51, 4);
+            Console.SetCursorPosition(50, 4);
             Console.Write("Lifetime average".PadLeft(20));
-            Console.SetCursorPosition(74, 4);
+            Console.SetCursorPosition(73, 4);
             Console.Write(lifetime_average_calories);
 
-            Console.SetCursorPosition(51, 5);
+            Console.SetCursorPosition(50, 5);
             Console.Write("Lifetime highest".PadLeft(20));
-            Console.SetCursorPosition(74, 5);
+            Console.SetCursorPosition(73, 5);
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write(lifetime_high_calories + " " + lifetime_high_date);
 
-            Console.SetCursorPosition(51, 6);
+            Console.SetCursorPosition(50, 6);
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("Lifetime lowest".PadLeft(20));
-            Console.SetCursorPosition(74, 6);
+            Console.SetCursorPosition(73, 6);
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write(lifetime_low_calories + " " + lifetime_low_date);
 
-            Console.SetCursorPosition(51, 7);
+            Console.SetCursorPosition(50, 7);
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("Last 10-day total".PadLeft(20));
-            Console.SetCursorPosition(74, 7);
+            Console.SetCursorPosition(73, 7);
             Console.Write(tenday_total_calories);
 
-            Console.SetCursorPosition(51, 8);
+            Console.SetCursorPosition(50, 8);
             Console.Write("Last 10-day average".PadLeft(20));
-            Console.SetCursorPosition(74, 8);
+            Console.SetCursorPosition(73, 8);
             Console.Write(tenday_average_calories);
 
-            Console.SetCursorPosition(51, 9);
+            Console.SetCursorPosition(50, 9);
             Console.Write("Last 10-day highest".PadLeft(20));
-            Console.SetCursorPosition(74, 9);
+            Console.SetCursorPosition(73, 9);
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write(tenday_high_calories + " " + tenday_high_date);
 
-            Console.SetCursorPosition(51, 10);
+            Console.SetCursorPosition(50, 10);
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("Last 10-day lowest".PadLeft(20));
-            Console.SetCursorPosition(74, 10);
+            Console.SetCursorPosition(73, 10);
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write(tenday_low_calories + " " + tenday_low_date);
 
