@@ -462,7 +462,7 @@ namespace CaloricIntakeConsole
 
             Console.ReadKey();
         }
-        static void editMenu(MealHistory mealHistory)
+        static void dep_editMenu(MealHistory mealHistory)
         {
             int userSelection = -1;
             int errorCode = 0;
@@ -479,7 +479,7 @@ namespace CaloricIntakeConsole
 
                     if (userSelection == 1)
                     {
-                        displayMeals(mealHistory);
+                        dep_displayMeals(mealHistory);
                         errorCode = 0;
                     }
                     else if (userSelection == 0)
@@ -495,7 +495,7 @@ namespace CaloricIntakeConsole
                 }
             }
         }                
-        static void displayMeals(MealHistory mealHistory)
+        static void dep_displayMeals(MealHistory mealHistory)
         {
             List<MealList> mealList = mealHistory.ListMeal();
 
