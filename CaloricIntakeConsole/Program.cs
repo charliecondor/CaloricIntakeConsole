@@ -27,7 +27,7 @@ namespace CaloricIntakeConsole
                     {
                         case 1: addMealMenu(mealHistory); break;  // Add Meal menu
                         case 2: editMenu(mealHistory); break;  // Edit Meal menu
-                        case 3: viewHistory(mealHistory); break;  // View Meal history chart
+                        case 3: drawViewHistory(mealHistory); break;  // View Meal history chart
                         default: errorCode = 1; break;  // When user doesn't select viable option
                     }
                 }
@@ -48,7 +48,7 @@ namespace CaloricIntakeConsole
             Console.Write("║");
             Console.Write("   Caloric Intake ");
             Console.ForegroundColor = ConsoleColor.Blue;
-            Console.Write("v0.6   ");
+            Console.Write("v0.7   ");
             Console.ForegroundColor = ConsoleColor.DarkBlue;
             Console.Write("║\n╠═════════════════════════╣\n║");
             Console.ForegroundColor = ConsoleColor.Cyan;
@@ -117,7 +117,7 @@ namespace CaloricIntakeConsole
                 }
             }
         }
-        static void viewHistory(MealHistory mealHistory)
+        static void drawViewHistory(MealHistory mealHistory)
         {
             List<DailySummary> dailySummary = mealHistory.GenerateSummary();
             dailySummary.Reverse();
@@ -263,28 +263,20 @@ namespace CaloricIntakeConsole
         {
             int userSelection = -1;
             int errorCode = 0;
-            Meal temp_meal = new Meal();
-            List<MealItems> temp_items = new List<MealItems>();
+            Meal temp_meal = new Meal() { Date = DateTime.Now.ToString("yyyy/MM/dd"), 
+                Time = DateTime.Now.ToString("HH:mm"), mealitems = new List<MealItems>()};
 
             while (userSelection != 0)
             {
-                errorOutput(errorCode);
-                appTitle();
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("\n   Add Meal\n\n1. Set Date\n2. Set Time\n3. Add Item\n4. Remove Item\n0. Save & Exit\n");
-                displayMealMenu(temp_meal);
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.Write("#> ");
-
+                drawAddMenu(errorCode, temp_meal);
                 try
                 {
                     userSelection = Convert.ToInt32(Console.ReadLine());
                     switch (userSelection)
                     {
-                        case 1: temp_meal.Date = addMealDate(ref errorCode); break;
-                        case 2: temp_meal.Time = addMealTime(ref errorCode); break;
-                        case 3: temp_meal.mealitems.Add(addMealItem(ref errorCode)); break;
-                        case 4: removeMealItem(ref errorCode, ref temp_meal); break;
+                        case 1: errorCode = editMealInfo(temp_meal); break;
+                        case 2: temp_meal.mealitems.Add(addMealItem(ref errorCode)); break;
+                        case 3: errorCode = removeMealItem(temp_meal); break;
                         default: if (temp_meal.IsNullOrEmpty()) { errorCode = 3; userSelection = -1; }; break;
                     }
                 }
@@ -295,6 +287,107 @@ namespace CaloricIntakeConsole
                 }
             }
             mealHistory.AddMeal(temp_meal);
+        }
+        static void drawAddMenu(int errorCode, Meal meal)
+        {
+            Console.Clear();
+            Console.SetCursorPosition(0, 0);
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.WriteLine("╔═════════════════════════╗");
+            Console.Write("║");
+            Console.Write("   Caloric Intake ");
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("v0.7   ");
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.Write("║\n╠═════════════════════════╣\n║");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.Write("      Add Meal Menu      ");
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.Write("║\n╟─────────────────────────╢\n║");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("   1. Edit Date/Time     ");
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.Write("║\n║");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("   2. Add Item           ");
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.Write("║\n║");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("   3. Remove Item        ");
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.Write("║\n║");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("   0. Save & Exit        ");            
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.Write("║\n╟─────────────────────────╢\n║");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("   #>                    ");
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.Write("║\n╠═════════════════════════╣\n");
+            Console.WriteLine("║                         ║");
+            Console.WriteLine("║                         ║");
+            Console.WriteLine("╚═════════════════════════╝");
+            setError(errorCode);
+
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.SetCursorPosition(27, 0);
+            Console.Write("╔══════════════════╤══════════════════════════════╗");
+            Console.SetCursorPosition(27, 1);
+            Console.Write("║ Date:            │ Time:                        ║");
+            Console.SetCursorPosition(27, 2);
+            Console.Write("╠═══╦════════╦═════╧══╦════════════════════╦══════╣");
+            Console.SetCursorPosition(27, 3);
+            Console.Write("║ # ║ Qty    ║ Unit   ║ Description        ║ Cals ║");
+            Console.SetCursorPosition(27, 4);
+            Console.Write("╟───╫────────╫────────╫────────────────────╫──────╢");
+
+            int mealitem_rows = 0;
+            int last_row = 5;
+            if (meal.mealitems != null) mealitem_rows = meal.mealitems.Count;
+            for (int i = 0; i < mealitem_rows; i++)
+            {
+                Console.SetCursorPosition(27, last_row);
+                Console.Write("║   ║        ║        ║                    ║      ║");
+                last_row++;
+            }
+            Console.SetCursorPosition(27, last_row);
+            Console.Write("╚═══╩════════╩════════╩════════════════════╩══════╝");
+
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.SetCursorPosition(35, 1);
+            Console.Write(meal.Date);
+            Console.SetCursorPosition(54, 1);
+            Console.Write(meal.Time);
+
+            last_row = 5;
+            string entry, qty, unit, desc, cal;
+            for (int i = 0; i < mealitem_rows; i++)
+            {
+                entry = Convert.ToString(i).PadRight(2);
+                entry = entry.Substring(0, 2);
+                qty = meal.mealitems[i].Quantity.PadRight(6);
+                qty = qty.Substring(0, 6);
+                unit = meal.mealitems[i].UnitMeasurement.PadRight(6);
+                unit = unit.Substring(0, 6);
+                desc = meal.mealitems[i].Description.PadRight(18);
+                desc = desc.Substring(0, 18);
+                cal = Convert.ToString(meal.mealitems[i].Calories).PadRight(4);
+                cal = cal.Substring(0, 4);
+
+                Console.SetCursorPosition(29, last_row);
+                Console.Write(entry);
+                Console.SetCursorPosition(33, last_row);
+                Console.Write(qty);
+                Console.SetCursorPosition(42, last_row);
+                Console.Write(unit);
+                Console.SetCursorPosition(51, last_row);
+                Console.Write(desc);
+                Console.SetCursorPosition(72, last_row);
+                Console.Write(cal);
+
+                last_row++;
+            }
+            Console.SetCursorPosition(7, 10);
         }
         static void displayMeals(MealHistory mealHistory)
         {
@@ -308,44 +401,6 @@ namespace CaloricIntakeConsole
 
             Console.WriteLine();
             Console.ReadKey();
-        }
-        static void displayMealMenu(Meal temp_meal)
-        {
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.Write("[Meal Date]: ");
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(temp_meal.Date);
-
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.Write("[Meal Time]: ");
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(temp_meal.Time);
-
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine("[Meal Item(s)]");
-            Console.WriteLine("|Entry#\t| Qty\t| Unit\t| Description\t\t| Calories\t|:");
-            Console.ForegroundColor = ConsoleColor.White;
-
-            if (temp_meal.mealitems != null)
-            {
-                int entry_number = 0;
-                string entry, qty, unit, desc, cal, end;
-
-                foreach (MealItems item in temp_meal.mealitems)
-                {
-                    entry = formatOutput(8, "[" + Convert.ToString(entry_number) + "]");
-                    qty = formatOutput(8, item.Quantity);
-                    unit = formatOutput(8, item.UnitMeasurement);
-                    desc = formatOutput(24, item.Description);
-                    cal = formatOutput(16, Convert.ToString(item.Calories));
-                    end = formatOutput(8, "");
-
-                    Console.WriteLine(entry + qty + unit + desc + cal + end);
-
-                    entry_number++;
-                }
-            }
-            Console.WriteLine("\n");
         }
         static void setError(int errorCode = 0)
         {
@@ -418,61 +473,50 @@ namespace CaloricIntakeConsole
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine("+-----------------+");
         }
-        static string formatOutput(int column_width, string column_text)
-        {                        
-            string text = "| " + column_text;
-            text = text.PadRight(column_width);            
-            return text.Substring(0, column_width);
-        }                
-        static string addMealDate(ref int error_code)
+        static int editMealInfo(Meal meal)
         {
-            Console.Write("Enter Meal Date [YYYY/MM/DD]: ");
-            string meal_date = Console.ReadLine();
             try
-            {                
+            {
+                Console.SetCursorPosition(1, 15);
+                Console.Write("Set Date [YYYY/MM/DD]: ");
+                string meal_date = Console.ReadLine();
                 DateTime mealDate = new DateTime(Convert.ToInt32(meal_date.Substring(0, 4)),
                     Convert.ToInt32(meal_date.Substring(5, 2)),
                     Convert.ToInt32(meal_date.Substring(8, 2)));
-                error_code = 0;
-                return mealDate.ToString("yyyy/MM/dd");
-            }
-            catch
-            {
-                error_code = 2;
-                return "";
-            }
-        }
-        static string addMealTime(ref int error_code)
-        {
-            Console.Write("Enter Meal Time [HH:MM]: ");
-            string meal_time = Console.ReadLine();
-            try
-            {
+                meal.Date = mealDate.ToString("yyyy/MM/dd");
+                
+                Console.SetCursorPosition(1, 16);
+                Console.Write("Set Time [HH:MM]: ");
+                string meal_time = Console.ReadLine();
                 DateTime mealTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day,
                     Convert.ToInt32(meal_time.Substring(0, 2)), Convert.ToInt32(meal_time.Substring(3, 2)), 0);
-                error_code = 0;
-                return mealTime.ToString("HH:mm");
+                meal.Time = mealTime.ToString("HH:mm");
+                return 0;
             }
             catch
             {
-                error_code = 2;
-                return "";
+                return 2;
             }
-        }
+        }                
         static MealItems addMealItem(ref int error_code)
         {
-            Console.WriteLine("Entering Meal Item (QTY/UNIT/DESC/CAL)...");
-            Console.Write("Enter Quantity: ");
-            string item_qty = Console.ReadLine();
-            Console.Write("Enter Unit: ");
-            string item_unit = Console.ReadLine();
-            Console.Write("Enter Description: ");
-            string item_desc = Console.ReadLine();
-            Console.Write("Enter Calories: ");
-            string str_item_cals = Console.ReadLine();
-
             try
-            {                
+            {
+                Console.SetCursorPosition(1, 15);
+                Console.WriteLine("Add Meal Item (QTY/UNIT/DESC/CAL)...");
+                Console.SetCursorPosition(1, 16);
+                Console.Write("Enter Quantity: ");
+                string item_qty = Console.ReadLine();
+                Console.SetCursorPosition(1, 17);
+                Console.Write("Enter Unit: ");
+                string item_unit = Console.ReadLine();
+                Console.SetCursorPosition(1, 18);
+                Console.Write("Enter Description: ");
+                string item_desc = Console.ReadLine();
+                Console.SetCursorPosition(1, 19);
+                Console.Write("Enter Calories: ");
+                string str_item_cals = Console.ReadLine();
+
                 int int_item_cals = Convert.ToInt32(str_item_cals);
                 error_code = 0;
                 return new MealItems { Quantity = item_qty, UnitMeasurement = item_unit, 
@@ -484,24 +528,24 @@ namespace CaloricIntakeConsole
                 return new MealItems();
             }
         }
-        static void removeMealItem(ref int error_code, ref Meal tempmeal)
+        static int removeMealItem(Meal tempmeal)
         {
-            if (tempmeal.mealitems.Count == 0) { error_code = 4; return; }
-            Console.Write("Select Meal Item to Remove [Entry #]: ");
-            string str_entry_to_remove = Console.ReadLine();
-
             try
             {
+                if (tempmeal.mealitems.Count == 0) { return 4; }
+                Console.SetCursorPosition(1, 15);
+                Console.Write("Item to Remove [#]: ");
+                string str_entry_to_remove = Console.ReadLine();
                 int int_entry_to_remove = Convert.ToInt32(str_entry_to_remove);
                 if (int_entry_to_remove > 0 || int_entry_to_remove < tempmeal.mealitems.Count)
                 {
                     tempmeal.mealitems.RemoveAt(int_entry_to_remove);
-                    error_code = 0;
                 }
+                return 0;
             }
             catch
             {
-                error_code = 1;
+                return 1;
             }
         }        
     }
