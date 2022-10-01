@@ -570,53 +570,7 @@ namespace CaloricIntakeConsole
             Console.Write(tenday_low_calories + " " + tenday_low_date);
 
             Console.ReadKey();
-        }
-        static void dep_editMenu(MealHistory mealHistory)
-        {
-            int userSelection = -1;
-            int errorCode = 0;
-            while (userSelection != 0)
-            {                
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("\n   Edit Meal\n\n1. Edit/Delete Meal\n0. Save & Exit\n");
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.Write("#> ");
-
-                try
-                {
-                    userSelection = Convert.ToInt32(Console.ReadLine());
-
-                    if (userSelection == 1)
-                    {
-                        dep_displayMeals(mealHistory);
-                        errorCode = 0;
-                    }
-                    else if (userSelection == 0)
-                    {
-                        errorCode = 0;
-                        userSelection = 0;
-                    }
-                }
-                catch
-                {
-                    errorCode = 1;
-                    userSelection = -1;
-                }
-            }
-        }                
-        static void dep_displayMeals(MealHistory mealHistory)
-        {
-            List<MealList> mealList = mealHistory.ListMeal();
-
-            Console.WriteLine("Index \t Date \t Time \t Calories");
-            foreach (MealList item in mealList)
-            {
-                Console.WriteLine(item.Index + "\t" + item.Date + "\t" + item.Time + "\t" + item.Calories);
-            }
-
-            Console.WriteLine();
-            Console.ReadKey();
-        }                
+        }        
         static void setError(int errorCode = 0)
         {
             Console.SetCursorPosition(2, 12);
