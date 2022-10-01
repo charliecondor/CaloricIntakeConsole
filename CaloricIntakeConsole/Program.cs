@@ -85,8 +85,8 @@ namespace CaloricIntakeConsole
                     userSelection = Convert.ToInt32(Console.ReadLine());
                     switch (userSelection)
                     {
-                        case 1: break;
-                        case 2: break;
+                        case 1: errorCode = editMeal(mealHistory); break;
+                        case 2: errorCode = removeMeal(mealHistory); break;
                         default: break;
                     }
                 }
@@ -126,6 +126,7 @@ namespace CaloricIntakeConsole
         {
             try
             {
+                Console.ForegroundColor = ConsoleColor.White;
                 Console.SetCursorPosition(1, 15);
                 Console.WriteLine("Add Meal Item (QTY/UNIT/DESC/CAL)...");
                 Console.SetCursorPosition(1, 16);
@@ -165,6 +166,42 @@ namespace CaloricIntakeConsole
                 {
                     meal.mealitems.RemoveAt(int_entry_to_remove);
                 }
+                return 0;
+            }
+            catch
+            {
+                return 1;
+            }
+        }
+        static int editMeal(MealHistory mealHistory)
+        {
+            try
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.SetCursorPosition(1, 15);
+                Console.Write("Select Meal to Edit: ");
+                string str_index = Console.ReadLine();
+                int int_index = Convert.ToInt32(str_index);
+
+
+
+                return 0;
+            }
+            catch
+            {
+                return 1;
+            }
+        }
+        static int removeMeal(MealHistory mealHistory)
+        {
+            try
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.SetCursorPosition(1, 15);
+                Console.Write("Select Meal to Remove: ");
+                string str_index = Console.ReadLine();
+                int int_index = Convert.ToInt32(str_index);
+                mealHistory.meals.RemoveAt(int_index);
                 return 0;
             }
             catch
@@ -318,6 +355,78 @@ namespace CaloricIntakeConsole
         }
         static void drawEditMenu(int errorCode, MealHistory mealHistory)
         {
+            Console.Clear();
+            Console.SetCursorPosition(0, 0);
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.WriteLine("╔═════════════════════════╗");
+            Console.Write("║");
+            Console.Write("   Caloric Intake ");
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("v0.7   ");
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.Write("║\n╠═════════════════════════╣\n║");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.Write("      Edit Meal Menu     ");
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.Write("║\n╟─────────────────────────╢\n║");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("   1. Edit Meal          ");
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.Write("║\n║");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("   2. Remove Meal        ");
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.Write("║\n║");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("   0. Exit               ");
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.Write("║\n");
+            Console.Write("║                         ║\n");
+            Console.Write("╟─────────────────────────╢\n║");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("   #>                    ");
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.Write("║\n╠═════════════════════════╣\n");
+            Console.WriteLine("║                         ║");
+            Console.WriteLine("║                         ║");
+            Console.WriteLine("╚═════════════════════════╝");
+
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.SetCursorPosition(27, 0);
+            Console.WriteLine("╔═════╦════════════╦═══════╗");
+            Console.SetCursorPosition(27, 1);
+            Console.WriteLine("║  #  ║ Date       ║ Time  ║");
+            Console.SetCursorPosition(27, 2);
+            Console.WriteLine("╟─────╫────────────╫───────╢");
+            int row_count = 3;
+            int meal_index = 0;
+            foreach (Meal meal in mealHistory.meals)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkBlue;
+                Console.SetCursorPosition(27, row_count);
+                Console.Write("║ ");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write(meal_index.ToString().PadRight(3));
+                Console.ForegroundColor = ConsoleColor.DarkBlue;
+                Console.Write(" ║ ");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write(meal.Date);
+                Console.ForegroundColor = ConsoleColor.DarkBlue;
+                Console.Write(" ║ ");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write(meal.Time);
+                Console.ForegroundColor = ConsoleColor.DarkBlue;
+                Console.Write(" ║");
+                meal_index++;
+                row_count++;
+            }
+            Console.SetCursorPosition(27, row_count);
+            Console.WriteLine("╚═════╩════════════╩═══════╝");
+
+            setError(errorCode);
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.SetCursorPosition(0, 0);
+            Console.SetCursorPosition(6, 10);
             return;
         }
         static void drawViewHistory(MealHistory mealHistory)
