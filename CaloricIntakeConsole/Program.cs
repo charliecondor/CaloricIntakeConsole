@@ -689,23 +689,6 @@ namespace CaloricIntakeConsole
             meals.Add(new Meal { Date = meal.Date, Time = meal.Time, mealitems = meal.mealitems });
             return true;
         }
-        public List<MealList> ListMeal()
-        {
-            List<MealList> mealList = new List<MealList>();
-            int index = 0;
-
-            foreach (Meal item in meals)
-            {
-                int mealTotalCalories = 0;
-                foreach (MealItems mealItem in item.mealitems)
-                {
-                    mealTotalCalories += mealItem.Calories;
-                }
-                mealList.Add(new MealList { Index = index, Date = item.Date, Time = item.Time, Calories = mealTotalCalories });
-                index++;
-            }
-            return mealList;
-        }
         public MealHistory LoadJSON()
         {
             var options = new JsonSerializerOptions { IncludeFields = true };  // Include fields for serializing objects with objects            
