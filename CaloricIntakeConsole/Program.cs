@@ -181,9 +181,83 @@ namespace CaloricIntakeConsole
                 Console.SetCursorPosition(1, 15);
                 Console.Write("Select Meal to Edit: ");
                 string str_index = Console.ReadLine();
-                int int_index = Convert.ToInt32(str_index);
+                int int_index = Convert.ToInt32(str_index);                
 
+                Console.ForegroundColor = ConsoleColor.DarkBlue;
+                Console.SetCursorPosition(55, 0);
+                Console.Write("╔══════════════════╤══════════════════════════════╗");
+                Console.SetCursorPosition(55, 1);
+                Console.Write("║ Date:            │ Time:                        ║");
+                Console.SetCursorPosition(55, 2);
+                Console.Write("╠═══╦════════╦═════╧══╦════════════════════╦══════╣");
+                Console.SetCursorPosition(55, 3);
+                Console.Write("║ # ║ Qty    ║ Unit   ║ Description        ║ Cals ║");
+                Console.SetCursorPosition(55, 4);
+                Console.Write("╟───╫────────╫────────╫────────────────────╫──────╢");
+                int mealitem_rows = 0;
+                int last_row = 5;
+                if (mealHistory.meals[int_index].mealitems != null) mealitem_rows = mealHistory.meals[int_index].mealitems.Count;
+                for (int i = 0; i < mealitem_rows; i++)
+                {
+                    Console.SetCursorPosition(55, last_row);
+                    Console.Write("║   ║        ║        ║                    ║      ║");
+                    last_row++;
+                }
+                Console.SetCursorPosition(55, last_row);
+                Console.Write("╚═══╩════════╩════════╩════════════════════╩══════╝");
 
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.SetCursorPosition(63, 1);
+                Console.Write(mealHistory.meals[int_index].Date);
+                Console.SetCursorPosition(82, 1);
+                Console.Write(mealHistory.meals[int_index].Time);
+
+                last_row = 5;
+                string entry, qty, unit, desc, cal;
+                for (int i = 0; i < mealitem_rows; i++)
+                {
+                    entry = Convert.ToString(i).PadRight(2);
+                    entry = entry.Substring(0, 2);
+                    qty = mealHistory.meals[int_index].mealitems[i].Quantity.PadRight(6);
+                    qty = qty.Substring(0, 6);
+                    unit = mealHistory.meals[int_index].mealitems[i].UnitMeasurement.PadRight(6);
+                    unit = unit.Substring(0, 6);
+                    desc = mealHistory.meals[int_index].mealitems[i].Description.PadRight(18);
+                    desc = desc.Substring(0, 18);
+                    cal = Convert.ToString(mealHistory.meals[int_index].mealitems[i].Calories).PadRight(4);
+                    cal = cal.Substring(0, 4);
+
+                    Console.SetCursorPosition(57, last_row);
+                    Console.Write(entry);
+                    Console.SetCursorPosition(61, last_row);
+                    Console.Write(qty);
+                    Console.SetCursorPosition(70, last_row);
+                    Console.Write(unit);
+                    Console.SetCursorPosition(79, last_row);
+                    Console.Write(desc);
+                    Console.SetCursorPosition(100, last_row);
+                    Console.Write(cal);
+
+                    last_row++;
+                }
+
+                Console.SetCursorPosition(56, ++last_row);
+                Console.Write("Item to Edit? [#]: ");
+                string str_mealitem_to_edit = Console.ReadLine();
+                int int_mealitem_to_edit = Convert.ToInt32(str_mealitem_to_edit);
+
+                Console.SetCursorPosition(56, ++last_row);
+                Console.Write("Field to Edit? [Q/U/D/C]: ");
+                string str_field_to_edit = Console.ReadLine();
+
+                Console.SetCursorPosition(56, ++last_row);
+                Console.Write("New value: ");
+                string str_new_value = Console.ReadLine();
+
+                if (str_field_to_edit == "Q") mealHistory.meals[int_index].mealitems[int_mealitem_to_edit].Quantity = str_new_value;
+                else if (str_field_to_edit == "U") mealHistory.meals[int_index].mealitems[int_mealitem_to_edit].UnitMeasurement = str_new_value;
+                else if (str_field_to_edit == "D") mealHistory.meals[int_index].mealitems[int_mealitem_to_edit].Description = str_new_value;
+                else if (str_field_to_edit == "C") mealHistory.meals[int_index].mealitems[int_mealitem_to_edit].Calories = Convert.ToInt32(str_new_value);
 
                 return 0;
             }
