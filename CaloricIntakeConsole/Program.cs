@@ -767,12 +767,5 @@ namespace CaloricIntakeConsole
     {
         public string Date { get; set; }
         public int TotalCalories { get; set; }
-    }
-    public class MealList
-    {
-        public int Index { get; set; }
-        public string Date { get; set; }
-        public string Time { get; set; }
-        public int Calories { get; set; }
-    }
+    }    
 }
