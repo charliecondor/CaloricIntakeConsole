@@ -292,7 +292,7 @@ namespace CaloricIntakeConsole
             Console.Write("║");
             Console.Write("   Caloric Intake ");
             Console.ForegroundColor = ConsoleColor.Blue;
-            Console.Write("v0.7   ");
+            Console.Write("v1.0   ");
             Console.ForegroundColor = ConsoleColor.DarkBlue;
             Console.Write("║\n╠═════════════════════════╣\n║");
             Console.ForegroundColor = ConsoleColor.Cyan;
@@ -335,7 +335,7 @@ namespace CaloricIntakeConsole
             Console.Write("║");
             Console.Write("   Caloric Intake ");
             Console.ForegroundColor = ConsoleColor.Blue;
-            Console.Write("v0.7   ");
+            Console.Write("v1.0   ");
             Console.ForegroundColor = ConsoleColor.DarkBlue;
             Console.Write("║\n╠═════════════════════════╣\n║");
             Console.ForegroundColor = ConsoleColor.Cyan;
@@ -436,7 +436,7 @@ namespace CaloricIntakeConsole
             Console.Write("║");
             Console.Write("   Caloric Intake ");
             Console.ForegroundColor = ConsoleColor.Blue;
-            Console.Write("v0.7   ");
+            Console.Write("v1.0   ");
             Console.ForegroundColor = ConsoleColor.DarkBlue;
             Console.Write("║\n╠═════════════════════════╣\n║");
             Console.ForegroundColor = ConsoleColor.Cyan;
